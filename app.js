@@ -1,6 +1,7 @@
 const express = require("express");
 const PORT = 3500;
 const app = express();
+require('dotenv').config();
 
 
 
