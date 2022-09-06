@@ -9,16 +9,16 @@ const createOrder = async (req, res, next) => {
         if (order_id) {
             let existingOrder = await OrderModel.findOne({ order_id: order_id });
             if (existingOrder) {
-                res.json({ status: "success", message: "Order Id already exists." });
+                res.status(403).json({ message: "Order Id already exists." });
             } else {
                 const order = new OrderModel(body);
                 const saveOrder = await order.save();
                 if (saveOrder) {
-                    res.json({ status: "success", message: "Order created successfully" });
+                    res.json({ message: "Order created successfully" });
                 }
             }
         } else {
-            res.json({ status: "success", message: "Please provide order id." });
+            res.status(400).json({ message: "Please provide order id." });
         }
     } catch (error) {
         next(error);
@@ -34,12 +34,12 @@ const updateOrder = async (req, res, next) => {
             let { delivery_date } = req.body;
             let updateOrder = await OrderModel.findOneAndUpdate({ order_id: orderId }, { delivery_date }, { new: true });
             if (updateOrder) {
-                res.json({ status: "success", message: "Order updated successfully.", data: updateOrder });
+                res.status(200).json({ message: "Order updated successfully.", data: updateOrder });
             } else {
-                res.json({ status: "success", message: "Something went wrong." });
+                res.json({ status: "error", message: "Something went wrong." });
             }
         } else {
-            res.json({ status: "success", message: "Please provide order id." });
+            res.status(400).json({ message: "Please provide order id." });
         }
 
     } catch (error) {
@@ -55,12 +55,12 @@ const orderListByDate = async (req, res, next) => {
 
             let order = await OrderModel.find({ order_date: { $gte: orderDate } });
             if (order && order.length) {
-                res.json({ status: "success", message: "Orders found.", data: order });
+                res.status(200).json({ message: "Orders found.", data: order });
             } else {
-                res.json({ status: "success", message: "Orders could not found." });
+                res.status(404).json({ message: "Orders could not found." });
             }
         } else {
-            res.json({ status: "success", message: "Please provide order date." });
+            res.status(400).json({ message: "Please provide order date." });
         }
     } catch (error) {
         next(error);
@@ -74,12 +74,12 @@ const searchOrderByOrderId = async (req, res, next) => {
         if (orderId) {
             let order = await OrderModel.findOne({ order_id: orderId });
             if (order) {
-                res.json({ status: "success", message: "Orders found.", data: order });
+                res.status(200).json({ status: "success", message: "Orders found.", data: order });
             } else {
-                res.json({ status: "success", message: "Orders could not found." });
+                res.status(404).json({ status: "success", message: "Orders could not found." });
             }
         } else {
-            res.json({ status: "success", message: "Please provide order date." });
+            res.status(400).json({ status: "success", message: "Please provide order date." });
         }
     } catch (error) {
         next(error);
@@ -94,10 +94,10 @@ const deleteOrderByOrderId = async (req, res, next) => {
         if (orderId) {
             const deletedOrder = await OrderModel.findOneAndDelete(orderId);
             if (deletedOrder) {
-                res.json({ status: "success", message: "Order has been deleted successfully." });
+                res.status(200).json({ status: "success", message: "Order has been deleted successfully." });
             }
         } else {
-            res.json({ status: "success", message: "Please provide order Id." });
+            res.status(400).json({ status: "success", message: "Please provide order Id." });
         }
 
     } catch (error) {
